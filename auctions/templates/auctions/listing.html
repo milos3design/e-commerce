@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>Listing: {{ listing.title }}</h2>
+
+    <div class="image">
+        {% if listing.image_url %}
+            <img src="{{ listing.image_url }}" style="max-width:600px; max-height: 500px; ">
+        {% endif %}
+    </div>
+    <div">Price: <h4 style="display:inline;">$ {{ listing.price }}</h4></div>
+    <div class="description">
+        Description: {{ listing.description }}
+        {{ listing.creator }}
+    </div>
+
+{% endblock %}

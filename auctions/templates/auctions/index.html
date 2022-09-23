@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    {%  for listing in listings %}
+        <div style="display: flex; flex-direction: row; margin-top: 30px;">
+            <div style="width: 440px; min-width:440px; margin-bottom: 40px;">
+                {% if listing.image_url %}
+                    <a href="{% url 'listing' listing.id %}">
+                    <img src="{{ listing.image_url }}" style="max-width:400px; max-height:200px;">
+                    </a>
+                {% else %}
+                <div style="background-color: rgb(245, 245, 245); color: darkgray; width: 400px; height: 200px; text-align: center; padding-top: 80px;">No Image</div>
+                {% endif %}
+            </div>
+            <div style="margin-bottom: 40px;">
+                <div style="width:auto; margin-left: 40px;">
+                    <a href="{% url 'listing' listing.id %}">
+                    <h4>{{ listing.title }}</h4>
+                    </a>
+                    <h6>Price: ${{ listing.price }}</h6>
+                    <p>{{ listing.description }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
