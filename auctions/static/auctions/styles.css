@@ -1,13 +1,18 @@
 body {
-    padding: 10px;
-
+    padding: 20px;
 }
 
 #lay_main {
-    display: inline-block;
-    background-color: antiquewhite;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .lay_item {
-    flex-direction: row;
+    margin-left: 40px;
+}
+
+.lay_item3 {
+    color: blue;
+    margin-left: auto;
 }
