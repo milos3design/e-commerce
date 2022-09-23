@@ -1,3 +1,13 @@
 body {
     padding: 10px;
+
+}
+
+#lay_main {
+    display: inline-block;
+    background-color: antiquewhite;
+}
+
+.lay_item {
+    flex-direction: row;
 }
