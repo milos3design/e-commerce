@@ -19,9 +19,20 @@ body {
     margin-left: auto;
 }
 
-#main_list {
+.main_box {
     display: flex;
     flex-direction: row;
+}
+
+#img_index {
+    width: 440px;
+    min-width:440px;
+    margin-bottom: 40px;
+}
+
+#img_index_size {
+    max-width:400px; 
+    max-height:200px;
 }
 
 #img_list {
@@ -30,6 +41,16 @@ body {
     min-width: 360px;
     max-height: 600px;
 }
+
+#no_image_index {
+    background-color: rgb(245, 245, 245);
+    color: darkgray;
+    width: 400px;
+    height: 200px;
+    text-align: center;
+    padding-top: 80px; 
+}
+
 
 #no_image {
     max-width: 560px;
@@ -42,6 +63,7 @@ body {
     height: 400px;
     text-align: center;
     padding-top: 200px;
+    text-decoration: none;
 }
 
 #desc_list {
@@ -51,4 +73,8 @@ body {
 
 .small_text {
     font-size: small;
+}
+
+.top_margin {
+    margin-top: 20px;
 }

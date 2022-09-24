@@ -10,6 +10,7 @@ from .models import User, Category, Listing
 
 def index(request):
     return render(request, "auctions/index.html", {
+        "categories": Category.objects.all(),
         "listings": Listing.objects.filter(active=True)
     })
 
@@ -68,22 +69,24 @@ def register(request):
     
 @login_required
 def create(request):
-    
+    # If POST method
     if request.method == "POST":
-        
+        # Get all needed data
         title = request.POST["title"]
         description = request.POST["description"]
         price = request.POST["price"]
         image_url = request.POST["image_url"]
         category = Category.objects.filter(category_item=request.POST["category"])[0]
         creator = request.user
-        
+        # created field is inserted automatically 
+
+        # Create listing
         lst = Listing(title=title,description=description, price=price,
         image_url=image_url, category=category, creator=creator)
-
+        # Save listing
         lst.save()
-
-        return HttpResponseRedirect(reverse("index"))
+        # Redirect to that listing using reverse
+        return HttpResponseRedirect(reverse("listing", args=(lst.id,)))
 
     else:
         return render(request,"auctions/create.html", {
@@ -94,4 +97,21 @@ def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     return render(request, "auctions/listing.html", {
         "listing": listing
+    })
+
+
+def categories(request):
+    return render(request, "auctions/categories.html", {
+        # Return all categories
+        "categories": Category.objects.all(),
+    })
+
+def category(request, category):
+    # Get the current category from the argument
+    current = Category.objects.get(category_item=category)
+    return render(request, "auctions/category.html", {
+        # From all categories, get one that matches argument
+        "category": Category.objects.get(category_item=category),
+        # From all listings filter only those with category same as argument
+        "listings": Listing.objects.filter(category=current)
     })

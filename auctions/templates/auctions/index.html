@@ -2,24 +2,26 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
+    
     {%  for listing in listings %}
-        <div style="display: flex; flex-direction: row; margin-top: 30px;">
-            <div style="width: 440px; min-width:440px; margin-bottom: 40px;">
+        <div class="main_box top_margin">
+            <div id="img_index">
                 {% if listing.image_url %}
                     <a href="{% url 'listing' listing.id %}">
-                    <img src="{{ listing.image_url }}" style="max-width:400px; max-height:200px;">
+                    <img id="img_index_size" src="{{ listing.image_url }}"">
                     </a>
                 {% else %}
-                <div style="background-color: rgb(245, 245, 245); color: darkgray; width: 400px; height: 200px; text-align: center; padding-top: 80px;">No Image</div>
+                <a style="text-decoration:none" href="{% url 'listing' listing.id %}">
+                <div id="no_image_index">No Image</div>
+                </a>
                 {% endif %}
             </div>
             <div style="margin-bottom: 40px;">
                 <div style="width:auto; margin-left: 40px;">
                     <a href="{% url 'listing' listing.id %}">
-                    <h4>{{ listing.title }}</h4>
+                    <h5>{{ listing.title }}</h5>
                     </a>
-                    <h6>Price: ${{ listing.price }}</h6>
+                    <p style="font-weight: 800;">Price: ${{ listing.price }}</p>
                     <p>{{ listing.description }}</p>
                 </div>
             </div>
