@@ -9,6 +9,7 @@ class User(AbstractUser):
 class Category(models.Model):
     category_item = models.CharField(max_length=64)
 
+    # Order categories alphabetically
     class Meta:
         ordering = ('category_item',)
 
