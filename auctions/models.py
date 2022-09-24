@@ -24,7 +24,7 @@ class Listing(models.Model):
     category = models.ForeignKey(Category, default="Other", on_delete=models.SET_DEFAULT, related_name="categories")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="users_listings")
     created =  models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    watchlist = models.ManyToManyField(User, blank=True, null=True, related_name="watchers")
+    watchlist = models.ManyToManyField(User, blank=True, related_name="watchers")
     active = models.BooleanField(default=True)
 
     def __str__(self):

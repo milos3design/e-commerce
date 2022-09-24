@@ -1,18 +1,27 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-
-    <h2>Listing: {{ listing.title }}</h2>
-
-    <div class="image">
-        {% if listing.image_url %}
-            <img src="{{ listing.image_url }}" style="max-width:600px; max-height: 500px; ">
-        {% endif %}
+    {% if listing.active == True %}
+        <p style="color:blue;">Status: Active</p>
+    {% else %}
+        <p style="color:red;">Status: Closed</p>
+    {% endif %}
+    <div id="main_list">
+            {% if listing.image_url %}
+                <img id="img_list" src="{{ listing.image_url }}">
+            {% else %}
+                <div id="no_image">No Image</div>
+            {% endif %}
+        <div id="desc_list">
+            <div>
+                <h2>{{ listing.title }}</h2>
+            </div>
+            <div>
+                <p>Description: {{ listing.description }}</p>
+                <div class="small_text">Created by: {{ listing.creator }} on {{ listing.created}}</div>
+            </div>
+            <div>
+                Price: <h4 style="display:inline;">$ {{ listing.price }}</h4>
+            </div>
     </div>
-    <div">Price: <h4 style="display:inline;">$ {{ listing.price }}</h4></div>
-    <div class="description">
-        Description: {{ listing.description }}
-        {{ listing.creator }}
-    </div>
-
 {% endblock %}
