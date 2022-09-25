@@ -69,9 +69,9 @@
                     </div>
             {% else %}
                 {% if user == listing.current_bidder %}
-                    <p>Congratulations, you won the auction!</p>
+                <h5 class="top_margin">Congratulations, you won the auction!</h5>
                 {% else %}
-                    <p>This auction is closed! {{ listing.current_bidder }} wont the auction.</p>
+                    <h5 class="top_margin">This auction is closed! {{ listing.current_bidder }} won the auction.</h5>
                 {% endif %}
             {% endif %}
         {% endif %}
