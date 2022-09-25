@@ -27,7 +27,8 @@ class Listing(models.Model):
     created =  models.DateTimeField(auto_now_add=True, blank=True, null=True)
     watchlist = models.ManyToManyField(User, blank=True, related_name="watchers")
     active = models.BooleanField(default=True)
-    bids=models.IntegerField(default=0, blank=True, null=True)
+    bids = models.IntegerField(default=0, blank=True, null=True)
+    current_bidder = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="bidder", blank=True, null=True)
 
     def __str__(self):
         return f"{self.id}  {self.title} ${self.price}"

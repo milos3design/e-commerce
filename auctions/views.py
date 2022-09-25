@@ -130,6 +130,7 @@ def add_bid(request, listing_id):
             bids = bid_listing.bids + 1
             bid_listing.price = new_bid_price
             bid_listing.bids = bids
+            bid_listing.current_bidder = bidder
             bid_listing.save()
             # Create Bid
             new_bidd = Bid(bid_listing=bid_listing ,bid=new_bid_price, bidder=bidder)
@@ -160,4 +161,12 @@ def users_watchlist(request):
     return render(request, "auctions/watchlist.html", {
         "listings": watching
     })
+
+
+@login_required
+def close(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    listing.active = False
+    listing.save()
+    return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
         

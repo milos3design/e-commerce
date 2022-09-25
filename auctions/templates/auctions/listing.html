@@ -14,11 +14,11 @@
         <p style="display: inline; color:red;">Status: Closed</p>
     {% endif %}
     <div class="main_box">
-            {% if listing.image_url %}
-                <img id="img_list" src="{{ listing.image_url }}">
-            {% else %}
-                <div id="no_image">No Image</div>
-            {% endif %}
+        {% if listing.image_url %}
+            <img id="img_list" src="{{ listing.image_url }}">
+        {% else %}
+            <div id="no_image">No Image</div>
+        {% endif %}
         <div id="desc_list">
             <div>
                 <h2>{{ listing.title }}</h2>
@@ -33,32 +33,49 @@
                     Price: <h4 style="display:inline;">$ {{ bidding.bid }}</h4>
                 {% endif %}
             </div>
-            <div class="top_margin">
-                {% if user.is_authenticated %}
-                    <form action="{% url 'add_bid' listing_id=listing.id %}" method="POST">
-                        {% csrf_token %}
-                        <div>
-                            <input type="number" name="new_bid_price" min="0.00" max="10000.00" step="0.01" placeholder="New bid">
-                            <input type="submit" value="Place bid">
-                        </div>
-                    </form>
-                {% endif %}
-            </div>
-            <div>
-                {% if user.is_authenticated %}
-                    {% if user in listing.watchlist.all %}
-                        <form action="{% url 'remove_watch' listing_id=listing.id %}" method="POST">
+        {% if user.is_authenticated %}
+            {% if listing.active == True %}
+                {% if user == listing.creator %}
+                    <div>
+                        <form action="{% url 'close' listing_id=listing.id %}" method="POST">
                             {% csrf_token %}
-                            <button class="small_text top_margin" type="submit">Remove from Watchlist</button>
+                            <button class="btn btn-danger top_margin">Close auction</button>
                         </form>
-                    {% else %}
-                        <form action="{% url 'add_watch' listing_id=listing.id %}" method="POST">
+                    </div>
+                {% else %}
+                    <div class="top_margin">    
+                        <form action="{% url 'add_bid' listing_id=listing.id %}" method="POST">
                             {% csrf_token %}
-                            <button class="small_text top_margin" type="submit">Add to Watchlist</button>
-                    </form>
-                    {% endif %}
+                            <div>
+                                <input type="number" name="new_bid_price" min="0.00" max="10000.00" step="0.01" placeholder="New bid">
+                                <input type="submit" value="Place bid">
+                            </div>
+                        </form>
+                    </div>
                 {% endif %}
-            </div>
+                    <p class="small_text top_margin">{{ listing.bids }} bids so far. Last bidder: {{ listing.current_bidder }}</p>
+                    <div>
+                        {% if user in listing.watchlist.all %}
+                            <form action="{% url 'remove_watch' listing_id=listing.id %}" method="POST">
+                                {% csrf_token %}
+                                <button class="small_text top_margin" type="submit">Remove from Watchlist</button>
+                            </form>
+                        {% else %}
+                            <form action="{% url 'add_watch' listing_id=listing.id %}" method="POST">
+                                {% csrf_token %}
+                                <button class="small_text top_margin" type="submit">Add to Watchlist</button>
+                            </form>
+                        {% endif %}
+                    </div>
+            {% else %}
+                {% if user == listing.current_bidder %}
+                    <p>Congratulations, you won the auction!</p>
+                {% else %}
+                    <p>This auction is closed! {{ listing.current_bidder }} wont the auction.</p>
+                {% endif %}
+            {% endif %}
+        {% endif %}
             <div class="small_text top_margin">Created by: {{ listing.creator }} on {{ listing.created}}</div>
+        </div>
     </div>
 {% endblock %}
