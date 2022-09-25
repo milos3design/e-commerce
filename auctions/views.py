@@ -4,8 +4,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
-from .models import User, Category, Listing
+from .models import User, Category, Listing, Bid
 
 
 def index(request):
@@ -79,7 +80,6 @@ def create(request):
         category = Category.objects.filter(category_item=request.POST["category"])[0]
         creator = request.user
         # created field is inserted automatically 
-
         # Create listing
         lst = Listing(title=title,description=description, price=price,
         image_url=image_url, category=category, creator=creator)
@@ -96,7 +96,7 @@ def create(request):
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     return render(request, "auctions/listing.html", {
-        "listing": listing
+        "listing": listing,
     })
 
 
@@ -116,11 +116,36 @@ def category(request, category):
         "listings": Listing.objects.filter(category=current)
     })
 
+
+@login_required
+def add_bid(request, listing_id):
+    if request.method == "POST":
+        bid_listing = Listing.objects.get(pk=listing_id)
+        current_price = float(bid_listing.price)
+        new_bid_price = float(request.POST["new_bid_price"])
+        bidder = request.user
+
+        if (bid_listing.bids == 0 and new_bid_price >= current_price) or (new_bid_price > current_price):
+            # Update Listing Data
+            bids = bid_listing.bids + 1
+            bid_listing.price = new_bid_price
+            bid_listing.bids = bids
+            bid_listing.save()
+            # Create Bid
+            new_bidd = Bid(bid_listing=bid_listing ,bid=new_bid_price, bidder=bidder)
+            new_bidd.save()
+            messages.success(request, 'Bid accepted.')
+            return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+        else:
+            messages.info(request, 'Bid not accepted.')
+            return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+
 @login_required
 def add_watch(request, listing_id):
     lst = Listing.objects.get(pk=listing_id)
     lst.watchlist.add(request.user)
     return HttpResponseRedirect(reverse("listing", args=(lst.id,)))
+
 
 @login_required
 def remove_watch(request, listing_id):

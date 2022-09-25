@@ -1,11 +1,17 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
     Category: {{ listing.category }} | 
     {% if listing.active == True %}
         <p style="display: inline; color:blue;">Status: Active</p>
     {% else %}
-        <p style="color:red;">Status: Closed</p>
+        <p style="display: inline; color:red;">Status: Closed</p>
     {% endif %}
     <div class="main_box">
             {% if listing.image_url %}
@@ -21,7 +27,22 @@
                 <p>Description: {{ listing.description }}</p>
             </div>
             <div class="top_margin">
-                Price: <h4 style="display:inline;">$ {{ listing.price }}</h4>
+                {% if bidding.bid is None %}
+                    Price: <h4 style="display:inline;">$ {{ listing.price }}</h4>
+                {% else %}
+                    Price: <h4 style="display:inline;">$ {{ bidding.bid }}</h4>
+                {% endif %}
+            </div>
+            <div class="top_margin">
+                {% if user.is_authenticated %}
+                    <form action="{% url 'add_bid' listing_id=listing.id %}" method="POST">
+                        {% csrf_token %}
+                        <div>
+                            <input type="number" name="new_bid_price" min="0.00" max="10000.00" step="0.01" placeholder="New bid">
+                            <input type="submit" value="Place bid">
+                        </div>
+                    </form>
+                {% endif %}
             </div>
             <div>
                 {% if user.is_authenticated %}
