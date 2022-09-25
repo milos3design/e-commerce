@@ -1,8 +1,9 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    Category: {{ listing.category }} | 
     {% if listing.active == True %}
-        <p style="color:blue;">Status: Active</p>
+        <p style="display: inline; color:blue;">Status: Active</p>
     {% else %}
         <p style="color:red;">Status: Closed</p>
     {% endif %}
@@ -21,6 +22,21 @@
             </div>
             <div class="top_margin">
                 Price: <h4 style="display:inline;">$ {{ listing.price }}</h4>
+            </div>
+            <div>
+                {% if user.is_authenticated %}
+                    {% if user in listing.watchlist.all %}
+                        <form action="{% url 'remove_watch' listing_id=listing.id %}" method="POST">
+                            {% csrf_token %}
+                            <button class="small_text top_margin" type="submit">Remove from Watchlist</button>
+                        </form>
+                    {% else %}
+                        <form action="{% url 'add_watch' listing_id=listing.id %}" method="POST">
+                            {% csrf_token %}
+                            <button class="small_text top_margin" type="submit">Add to Watchlist</button>
+                    </form>
+                    {% endif %}
+                {% endif %}
             </div>
             <div class="small_text top_margin">Created by: {{ listing.creator }} on {{ listing.created}}</div>
     </div>

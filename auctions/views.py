@@ -115,3 +115,15 @@ def category(request, category):
         # From all listings filter only those with category same as argument
         "listings": Listing.objects.filter(category=current)
     })
+
+@login_required
+def add_watch(request, listing_id):
+    lst = Listing.objects.get(pk=listing_id)
+    lst.watchlist.add(request.user)
+    return HttpResponseRedirect(reverse("listing", args=(lst.id,)))
+
+@login_required
+def remove_watch(request, listing_id):
+    lst = Listing.objects.get(pk=listing_id)
+    lst.watchlist.remove(request.user)
+    return HttpResponseRedirect(reverse("listing", args=(lst.id,)))
