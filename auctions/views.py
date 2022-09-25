@@ -127,3 +127,12 @@ def remove_watch(request, listing_id):
     lst = Listing.objects.get(pk=listing_id)
     lst.watchlist.remove(request.user)
     return HttpResponseRedirect(reverse("listing", args=(lst.id,)))
+
+
+@login_required
+def users_watchlist(request):
+    watching = Listing.objects.filter(watchlist=request.user)
+    return render(request, "auctions/watchlist.html", {
+        "listings": watching
+    })
+        
