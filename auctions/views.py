@@ -81,10 +81,15 @@ def create(request):
         creator = request.user
         # created field is inserted automatically 
         # Create listing
-        lst = Listing(title=title,description=description, price=price,
-        image_url=image_url, category=category, creator=creator)
-        # Save listing
-        lst.save()
+        if (len(price.strip())) and (0.01 <= float(price) <= 999999.99) and (
+            round(float(price),2)==float(price)) and (len(title.strip())) and (len(description.strip())):
+            lst = Listing(title=title,description=description, price=price,
+            image_url=image_url, category=category, creator=creator)
+            # Save listing
+            lst.save()
+        else:
+            messages.info(request, 'Error! Musti provide Title, Description and Starting bid.')
+            return HttpResponseRedirect(reverse("index"))
         # Redirect to that listing using reverse
         return HttpResponseRedirect(reverse("listing", args=(lst.id,)))
 
@@ -128,17 +133,21 @@ def add_bid(request, listing_id):
         bidder = request.user
 
         if (bid_listing.bids == 0 and new_bid_price >= current_price) or (new_bid_price > current_price):
-            # Update Listing Data
-            bids = bid_listing.bids + 1
-            bid_listing.price = new_bid_price
-            bid_listing.bids = bids
-            bid_listing.current_bidder = bidder
-            bid_listing.save()
-            # Create Bid
-            new_bidd = Bid(bid_listing=bid_listing ,bid=new_bid_price, bidder=bidder)
-            new_bidd.save()
-            messages.success(request, 'Bid accepted.')
-            return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+            if 0.01 <= new_bid_price <= 999999.99 and round(new_bid_price,2)==new_bid_price:
+                # Update Listing Data
+                bids = bid_listing.bids + 1
+                bid_listing.price = new_bid_price
+                bid_listing.bids = bids
+                bid_listing.current_bidder = bidder
+                bid_listing.save()
+                # Create Bid
+                new_bidd = Bid(bid_listing=bid_listing ,bid=new_bid_price, bidder=bidder)
+                new_bidd.save()
+                messages.success(request, 'Bid accepted.')
+                return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+            else:
+                messages.info(request, 'Error! Invalid input.')
+                return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
         else:
             messages.info(request, 'Bid not accepted.')
             return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
