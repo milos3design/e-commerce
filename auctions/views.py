@@ -188,3 +188,12 @@ def add_comment(request, listing_id):
         else:
             messages.info(request, 'Comment not saved.')
             return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+
+
+@login_required
+def won(request):
+    current_user = request.user
+    auctions_won = Listing.objects.filter(active=False, current_bidder=current_user)
+    return render(request, "auctions/won.html", {
+        "listings": auctions_won
+    })
