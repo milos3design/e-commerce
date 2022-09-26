@@ -47,7 +47,7 @@
                         <form action="{% url 'add_bid' listing_id=listing.id %}" method="POST">
                             {% csrf_token %}
                             <div>
-                                <input type="number" name="new_bid_price" min="0.00" max="10000.00" step="0.01" placeholder="New bid">
+                                <input type="number" name="new_bid_price" min="0.00" max="999999.99" step="0.01" placeholder="New bid">
                                 <input type="submit" value="Place bid">
                             </div>
                         </form>
@@ -76,6 +76,32 @@
             {% endif %}
         {% endif %}
             <div class="small_text top_margin">Created by: {{ listing.creator }} on {{ listing.created}}</div>
+        </div>
+    </div>
+    <div>
+        <h5 class="top_margin">Comments</h5>
+        <div>
+            {% if user.is_authenticated %}
+                {% if listing.active == True %}
+                    <form action="{% url 'add_comment' listing_id=listing.id %}" method="POST">
+                        {% csrf_token %}
+                        <div >
+                            <input autofocus type="text" name="comment" placeholder="Type your comment" class="input-m">
+                            <input type="submit" value="Add comment">
+                        </div>
+                {% endif %}
+            {% endif %}
+            <div>
+                {% for comment in comments %}
+                    <div>
+                        <br>
+                        {{ comment.comment }}
+                    </div>
+                    <div class="small_text">
+                        Created by {{ comment.author }} on {{ comment.created }}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

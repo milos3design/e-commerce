@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .models import User, Category, Listing, Bid
+from .models import User, Category, Listing, Bid, Comment
 
 
 def index(request):
@@ -95,8 +95,10 @@ def create(request):
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
+    comments = Comment.objects.filter(comment_listing=listing_id)
     return render(request, "auctions/listing.html", {
         "listing": listing,
+        "comments": comments
     })
 
 
@@ -170,3 +172,19 @@ def close(request, listing_id):
     listing.save()
     return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
         
+
+@login_required
+def add_comment(request, listing_id):
+    if request.method == "POST":
+        comment_listing = Listing.objects.get(pk=listing_id)
+        author = request.user
+        comment = request.POST["comment"]
+        
+        if (len(comment.strip())):
+            new_comment = Comment(comment_listing=comment_listing, author=author, comment=comment)
+            new_comment.save()
+            messages.success(request, 'Comment saved.')
+            return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+        else:
+            messages.info(request, 'Comment not saved.')
+            return HttpResponseRedirect(reverse("listing", args=(listing_id, )))

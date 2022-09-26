@@ -20,7 +20,7 @@ class Category(models.Model):
 class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField(max_length=1024)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.DecimalField(max_digits=9, decimal_places=2)
     image_url = models.URLField(max_length=256, blank=True)
     category = models.ForeignKey(Category, default="Other", on_delete=models.SET_DEFAULT, related_name="categories")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="users_listings")
@@ -36,10 +36,13 @@ class Listing(models.Model):
 
 class Bid(models.Model):
     bid_listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bid_listings")
-    bid = models.DecimalField(max_digits=6, decimal_places=2)
+    bid = models.DecimalField(max_digits=9, decimal_places=2)
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidders", default=0, blank=True, null=True)
     bid_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
-"""
+
 class Comment(models.Model):
-    pass"""
+    comment_listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listings_comments")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="authors")
+    comment = models.TextField(max_length=1024)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
