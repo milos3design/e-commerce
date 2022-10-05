@@ -79,17 +79,17 @@ def create(request):
         image_url = request.POST["image_url"]
         category = Category.objects.filter(category_item=request.POST["category"])[0]
         creator = request.user
-        # created field is inserted automatically 
         # Create listing
-        if (len(price.strip())) and (0.01 <= float(price) <= 999999.99) and (
-            round(float(price),2)==float(price)) and (len(title.strip())) and (len(description.strip())):
+        if (len(price.strip())) and (0.01 <= float(price) <= 9999999.99) and (
+            round(float(price),2)==float(price)) and (len(title.strip())) and (
+                len(description.strip())):
             lst = Listing(title=title,description=description, price=price,
             image_url=image_url, category=category, creator=creator)
             # Save listing
             lst.save()
         else:
-            messages.info(request, 'Error! Musti provide Title, Description and Starting bid.')
-            return HttpResponseRedirect(reverse("index"))
+            messages.info(request, 'Error! Must provide Title, Description and Starting bid.')
+            return HttpResponseRedirect(reverse("create"))
         # Redirect to that listing using reverse
         return HttpResponseRedirect(reverse("listing", args=(lst.id,)))
 
@@ -120,7 +120,7 @@ def category(request, category):
         # From all categories, get one that matches argument
         "category": Category.objects.get(category_item=category),
         # From all listings filter only those with category same as argument
-        "listings": Listing.objects.filter(category=current)
+        "listings": Listing.objects.filter(category=current, active=True)
     })
 
 
@@ -129,18 +129,21 @@ def add_bid(request, listing_id):
     if request.method == "POST":
         bid_listing = Listing.objects.get(pk=listing_id)
         current_price = float(bid_listing.price)
-        new_bid_price = float(request.POST["new_bid_price"])
+        try:
+            new_bid_price = float(request.POST["new_bid_price"])
+        except ValueError:
+            new_bid_price = 0
         bidder = request.user
 
         if (bid_listing.bids == 0 and new_bid_price >= current_price) or (new_bid_price > current_price):
-            if 0.01 <= new_bid_price <= 999999.99 and round(new_bid_price,2)==new_bid_price:
+            if 0.01 <= new_bid_price <= 9999999.99 and round(new_bid_price,2)==new_bid_price:
                 # Update Listing Data
                 bids = bid_listing.bids + 1
                 bid_listing.price = new_bid_price
                 bid_listing.bids = bids
                 bid_listing.current_bidder = bidder
                 bid_listing.save()
-                # Create Bid
+                # Create New Bid
                 new_bidd = Bid(bid_listing=bid_listing ,bid=new_bid_price, bidder=bidder)
                 new_bidd.save()
                 messages.success(request, 'Bid accepted.')

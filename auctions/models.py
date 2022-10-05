@@ -11,7 +11,7 @@ class Category(models.Model):
 
     # Order categories alphabetically
     class Meta:
-        ordering = ('category_item',)
+        ordering = ("category_item",)
 
     def __str__(self):
         return self.category_item
@@ -31,7 +31,7 @@ class Listing(models.Model):
     current_bidder = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="bidder", blank=True, null=True)
 
     def __str__(self):
-        return f"{self.id}  {self.title} ${self.price}"
+        return f"{self.id} : {self.title}"
 
 
 class Bid(models.Model):
@@ -39,6 +39,9 @@ class Bid(models.Model):
     bid = models.DecimalField(max_digits=9, decimal_places=2)
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidders", default=0, blank=True, null=True)
     bid_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.id} : {self.bidder} bid ${self.bid} on {self.bid_listing}"
     
 
 class Comment(models.Model):
@@ -46,3 +49,6 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="authors")
     comment = models.TextField(max_length=1024)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.id} : {self.author} commented on {self.comment_listing} on {self.created}"

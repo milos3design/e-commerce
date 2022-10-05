@@ -7,7 +7,7 @@
             <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
         {% endfor %}
     {% endif %}
-    Category: {{ listing.category }} | 
+    Category: <a href="{% url 'category' category=listing.category %}">{{ listing.category }}</a> | 
     {% if listing.active == True %}
         <p style="display: inline; color:blue;">Status: Active</p>
     {% else %}
@@ -47,7 +47,7 @@
                         <form action="{% url 'add_bid' listing_id=listing.id %}" method="POST">
                             {% csrf_token %}
                             <div>
-                                <input type="number" name="new_bid_price" min="0.00" max="999999.99" step="0.01" placeholder="New bid">
+                                <input type="number" name="new_bid_price" min="0.00" max="9999999.99" step="0.01" placeholder="New bid">
                                 <input type="submit" value="Place bid">
                             </div>
                         </form>

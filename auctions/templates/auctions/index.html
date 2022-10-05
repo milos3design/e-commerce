@@ -12,18 +12,18 @@
             <div id="img_index">
                 {% if listing.image_url %}
                     <a href="{% url 'listing' listing.id %}">
-                    <img id="img_index_size" src="{{ listing.image_url }}"">
+                        <img id="img_index_size" src="{{ listing.image_url }}"">
                     </a>
                 {% else %}
                 <a style="text-decoration:none" href="{% url 'listing' listing.id %}">
-                <div id="no_image_index">No Image</div>
+                    <div id="no_image_index">No Image</div>
                 </a>
                 {% endif %}
             </div>
             <div style="margin-bottom: 40px;">
                 <div style="width:auto; margin-left: 40px;">
                     <a href="{% url 'listing' listing.id %}">
-                    <h5>{{ listing.title }}</h5>
+                        <h5>{{ listing.title }}</h5>
                     </a>
                     <p style="font-weight: 800;">Price: ${{ listing.price }}</p>
                     <p>{{ listing.description }}</p>
