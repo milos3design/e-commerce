@@ -149,10 +149,10 @@ def add_bid(request, listing_id):
                 messages.success(request, 'Bid accepted.')
                 return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
             else:
-                messages.info(request, 'Error! Invalid input.')
+                messages.error(request, 'Error! Invalid input.')
                 return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
         else:
-            messages.info(request, 'Bid not accepted.')
+            messages.warning(request, 'Bid not accepted.')
             return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
 
 @login_required
