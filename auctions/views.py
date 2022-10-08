@@ -77,7 +77,7 @@ def create(request):
         description = request.POST["description"]
         price = request.POST["price"]
         image_url = request.POST["image_url"]
-        category = Category.objects.filter(category_item=request.POST["category"])[0]
+        category = Category.objects.get(category_item=request.POST["category"])
         creator = request.user
         # Create listing
         if (len(price.strip())) and (0.01 <= float(price) <= 9999999.99) and (
